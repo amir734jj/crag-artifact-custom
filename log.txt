@@ -1,0 +1,54 @@
+*** TODO ***
+
+*** 28 sept 2005 (Görel)
+RESULTAT: Publicerat bättre dokumenterad version
+- Dokumenterat lite bättre
+- Bytt ut tabbar så källkoden ser ok ut från en web-browser
+- Lagt in ny kopia av jastadd
+- Zip och publish
+
+*** 26 sept 2005 (Görel)
+RESULTAT: Publicerat
+- Sett över filerna så de ser rimliga ut från browser map tabbar/blanka
+
+*** 20 sept 2005 (Görel)
+RESULTAT: Rensat från benchmarking och instrumentering
+
+*** 19 sept 2005 (Görel)
+RESULTAT: Uppdaterat log-filerna i både huvud och benchmarking-branch. Sorterat upp
+resulterande TODO-lista.
+
+*** 19 sept 2005 (Eva, Görel, Tobbe)
+RESULTAT: branch "Benchmarking" för ContextfreeGrammar.
+  Har spånat av branch för ContextfreeGrammar så att vi kan göra benchmarkingen där.
+  Iden är att vi skall rensa huvudgrenen så att den kan visas publikt.
+  Har kollat att vi kan uppdatera både huvudgrenen och branchen utan problem.
+  (Tips: för att hitta branchen i Eclipse skall man välja lämplig katalog och göra "Configure
+  Branches and Versions" och leta rätt på fil med branchens tag. Då dyker den upp under
+  "Branches" i CVS-fönstret och kan checkas ut.)
+RESULTAT: ny jastadd2 med stöd för noCacheCycle-flagga
+  Uppdaterat jastadd2 så att dess ant-task stöder noCacheCycle-flaggan
+  Kopierat nya jastadd2 till ContextfreeGrammar (detta gjordes innan branchingen ovan).
+ 
+*** 13 + 14 sept 2005 (Görel)
+RESULTAT: zip-fil etc. på webben
+  Har lagt till fil zip.xml för att generera zip-fil. Kan köras från kommandoraden med kommandot
+    ant -buildfile zip.xml
+  Då genereras ContextfreeGrammar.zip
+  Har lagt till script "publish" för att uppdatera exemplet på webben. Se scriptet för instruktioner.
+  Har flyttat repositoryt för ContextfreeGrammar ner till examples-katalogen på CVS-repositoryt. Släng gamla utcheckningar och
+  checka ut på nytt.
+
+*** 12 sept 2005 (Eva, Görel)
+RESULTAT: Gjort index.html fil
+  Vi har dokumenterat det mesta i katalogen.
+  - TODO: Återstår dokumentation av bench-katalogen.
+  - TODO: Refaktorisera instrumenteringen till separat aspekt??
+
+*** 8 sept 2005 (Eva, Görel)
+RESULTAT: Bytt ut Makefile mot Ant file
+   Vi har kopierat ny Jastadd från exempel på webben.
+   JastAdd-repositoryt för närvarande inkonsistent (AntTask saknas i jar-filen)
+**DONE (20050908/GH): Kolla att byggning & testning funkar från kommandoraden.
+        Det skall stå javac1.4 och inte javac i ant-filen! Det är ant-tasken som tolkar detta och startar rätt javac-kompilator.
+        Varför funkar inte testningen? Testerna måste ligga i ett riktigt paket och inte i "default package". Har flyttat dem.

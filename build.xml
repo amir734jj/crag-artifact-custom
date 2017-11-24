@@ -1,0 +1,91 @@
+<!-- Targets for working from terminal window:
+       build (default) - generates java files and compiles them
+       test            - runs junit test cases
+       clean           - removes all generated files and class files
+     Targets for working from Eclipse:
+       gen             - generates java files
+       genClean        - removes all generated files and their class files
+ -->
+
+<project name="Compiler" default="build" basedir=".">
+
+  <!-- "parser.name" is the language name used in the jjt file  -->
+  <property name="parser.name" value="CFGrammar"/>
+
+  <!-- "package" is the directory where generated files will be stored -->
+  <property name="package" value="AST"/>
+
+  <!-- "tools" is the directory where JavaCC.zip and junit.jar are located. -->
+  <property name="tools" value="tools"/>
+
+  <!-- "jastadd" is an ant task class in jastadd2.jar -->
+  <taskdef classname="jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
+
+  <!-- TARGET build -->
+  <target name="build" depends="gen">
+    <!-- compile all java files in srcdir and recursively in subdirectories -->
+    <!-- you can use the jikes compiler by changing javac1.4 to jikes -->
+    <javac compiler="javac1.4" debug="true" srcdir="." classpath="${tools}/junit.jar" />
+  </target>
+
+  <!-- TARGET gen -->
+  <target name="gen">
+    <!-- create a directory for the generated files -->
+    <mkdir dir="${basedir}/${package}"/>
+    <!-- run jastadd to generate AST files -->
+    <jastadd package="${package}" jjtree="true" noCacheCycle="true" grammar="${parser.name}" outdir="${basedir}">
+      <fileset dir=".">
+        <include name="**/*.ast"/>
+        <include name="**/*.jrag"/>
+        <include name="**/*.jadd"/>
+      </fileset>
+    </jastadd>
+    <!-- run jjtree to generate a javacc jj file-->
+    <jjtree
+        target="${parser.name}.jjt"
+        outputdirectory="${package}"
+        javacchome="${tools}"
+        buildnodefiles="true"
+        static="false"
+        multi="true"
+        visitor="true"
+        nodedefaultvoid="true"
+        nodeprefix='""'
+        nodepackage="${package}"
+      />
+    <!-- run javacc to generate the parser -->
+    <javacc
+        target="${package}/${parser.name}.jj"
+        outputdirectory="${package}"
+        javacchome="${tools}"
+        buildparser="true"
+        buildtokenmanager="true"
+        static="false"
+      />
+  </target>
+
+  <!-- TARGET clean -->
+  <target name="clean" depends="cleanGen">
+    <!-- Delete all classfiles in dir and recursively in subdirectories -->
+    <delete>
+      <fileset dir="." includes="**/*.class"/>
+    </delete>
+  </target>
+
+  <!-- TARGET cleanGen -->
+  <target name="cleanGen">
+    <!-- Delete the directory containing generated files and their class files -->
+    <delete dir="${package}"/>
+  </target>
+
+  <!-- TARGET test -->
+  <target name="test" depends="build">
+    <!-- Run all tests in dir by using the TestAll java program -->
+    <java 
+      classname="testframework.TestAll"
+      classpath=".:${tools}/junit.jar" 
+      fork="true" 
+      dir="."
+    />
+  </target>
+</project>
