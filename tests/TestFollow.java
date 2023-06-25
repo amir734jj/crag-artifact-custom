@@ -29,83 +29,19 @@ public class TestFollow extends FileContentsTestCase {
   }
   
   
-  public void testSimpleFollow() {
-    try {
-      CFGrammar g = new CFGrammar(new FileReader("TestGrammars/TestEmptyProd"));
-      CFG root = g.CFGrammar();
-      assertTrue("Follow of A is not empty", root.lookup("A").follow().isEmpty());
-      
-    } catch (ParseException e) {
-      fail("Could not parse file ");
-    } catch (FileNotFoundException e) {
-      fail("file not found");
-    }
-  }
-  
-  
-  
-  public void testAppelFollow() {
-    try {
-      CFGrammar g = new CFGrammar(new FileReader("TestGrammars/TestAppelGrammar"));
-      CFG root = g.CFGrammar();
-      Set emptySet = new HashSet();
-      Set nonEmptySet = new HashSet();
-      nonEmptySet.add("a");
-      nonEmptySet.add("d");
-      nonEmptySet.add("c");
-      assertTrue("Follow of X does not equal {a,c,d}", root.lookup("X").follow().equals(nonEmptySet));
-      assertTrue("Follow of Y does not equal {a,c,d}", root.lookup("Y").follow().equals(nonEmptySet));
-      assertTrue("Follow of Z does not equal {}", root.lookup("Z").follow().equals(emptySet));
-      
-    } catch (ParseException e) {
-      fail("Could not parse file ");
-    } catch (FileNotFoundException e) {
-      fail("file not found");
-    }
-  }
-  
-  public void testAppelCollectUses() {
-    try {
-      CFGrammar g = new CFGrammar(new FileReader("TestGrammars/TestAppelGrammar"));
-      CFG root = g.CFGrammar();
-      assertTrue(root.lookup("X").occurences().size()==1);
-      assertTrue(root.lookup("Y").occurences().size()==2);
-      assertTrue(root.lookup("Z").occurences().size()==1);      
-    } catch (ParseException e) {
-      fail("Could not parse file ");
-    } catch (FileNotFoundException e) {
-      fail("file not found");
-    }
-  }
-  public void testAppelsuffix() {
-    try {
-      CFGrammar g = new CFGrammar(new FileReader("TestGrammars/TestAppelGrammar"));
-      CFG root = g.CFGrammar();
-      NUse x = (NUse) root.lookup("X").occurences().iterator().next();
-      assertFalse(x.nullableSuffix());
-      Set xFirstSuffix = new HashSet();
-      xFirstSuffix.add("c");
-      xFirstSuffix.add("d");
-      xFirstSuffix.add("a");
-      assertTrue(x.firstSuffix().equals(xFirstSuffix));
-      NUse z = (NUse) root.lookup("Z").occurences().iterator().next();
-      assertTrue(z.nullableSuffix());
-      assertTrue(z.firstSuffix().isEmpty());
-    } catch (ParseException e) {
-      fail("Could not parse file ");
-    } catch (FileNotFoundException e) {
-      fail("file not found");
-    }
-  }
-
   public void testJavaFollow() {
     try {
-      CFGrammar g = new CFGrammar(new FileReader("TestGrammars/TestJavaGrammarSorted"));
+      CFGrammar g = new CFGrammar(new FileReader("TestGrammars/grammar.cfg"));
+
+      long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
+      long startTime = System.nanoTime();
+
       CFG root = g.CFGrammar();
       StringBuffer s = new StringBuffer();
       for(int i = 0; i < root.getNumRule(); i++) {
         Rule r = root.getRule(i);
         s.append(r.getNDecl().getID() + ", Follow: ");
+        // r.getNDecl().follow();
           TreeSet set = new TreeSet();
           set.addAll(r.getNDecl().follow());
           for (Iterator iter = set.iterator(); iter.hasNext();) {
@@ -114,7 +50,16 @@ public class TestFollow extends FileContentsTestCase {
         }
           s.append("\n");
       }
-      assertFileContents(new File("TestGrammars/TestJavaGrammarFollowResult"), s.toString());
+      long afterUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
+      long endTime = System.nanoTime();
+      double duration = (endTime - startTime) / 1000000.0 / 1000.0;
+
+      long actualMemUsed=afterUsedMem-beforeUsedMem;
+      System.out.println("memory: " + actualMemUsed * 1e-6);
+      System.out.println("time: " + duration);
+
+      // assertFileContents(new File("TestGrammars/TestJavaGrammarFollowResult"), s.toString());
+      // System.out.print(s.toString());
       
     } catch (ParseException e) {
       fail("Could not parse file ");

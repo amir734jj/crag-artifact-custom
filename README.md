@@ -108,3 +108,9 @@ Build steps when running `ant test`:
 Eva Magnusson and Görel Hedin, Lund University, Sweden
 
 This code was originally developed in 2005, under CVS.
+
+To run specific test
+```
+ant build
+java  -Xmx16g -cp .:tools/junit.jar testframework.TestAll -text TestFollow.class
+```

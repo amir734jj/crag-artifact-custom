@@ -1,0 +1,10 @@
+*.class
+.bsp
+.idea
+.metals
+.vscode
+target
+*.cfg
+.bash_history
+.oracle_jre_usage
+project/build.properties
